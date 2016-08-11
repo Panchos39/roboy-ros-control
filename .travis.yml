@@ -1,0 +1,27 @@
+# Use ubuntu trusty (14.04) with sudo privileges.
+dist: trusty
+sudo: required
+language:
+  - generic
+cache:
+  - apt
+
+env:
+  global:
+    - ROS_CI_DESKTOP="`lsb_release -cs`"  # e.g. [precise|trusty|...]
+    - ROS_PARALLEL_JOBS='-j8 -l6'
+
+script:
+  - sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu $ROS_CI_DESKTOP main\" > /etc/apt/sources.list.d/ros-latest.list"
+  - wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+  - sudo apt-get update -qq
+  - mkdir -p ~/workspace && cd ~/workspace && git clone https://github.com/Roboy/ros_control && cd ros_control && git checkout indigo && git submodule init && git submodule update
+  - cd ~/workspace/ros_control/src/flexrayusbinterface/lib && sudo dpkg -i libftd2xx_1.1.12_amd64.deb
+  - sudo apt-get install -y ros-indigo-desktop
+  - sudo apt-get install -y ros-indigo-controller-interface ros-indigo-controller-manager ros-indigo-control-toolbox ros-indigo-transmission-interface ros-indigo-joint-limits-interface
+  - source /opt/ros/indigo/setup.bash
+  - cd ~/workspace/ros_control
+  - catkin_make --pkg common_utilities
+  - source devel/setup.bash
+  - catkin_make
+  - source devel/setup.bash
