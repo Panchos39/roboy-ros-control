@@ -5,7 +5,6 @@
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
-#include <gazebo_ros_control/robot_hw_sim.h>
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
 #include <vector>

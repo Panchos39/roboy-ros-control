@@ -9,14 +9,8 @@ SET(CMAKE_BUILD_TYPE Debug)
 #==============================================================================
 
 # catkin
-find_package(catkin REQUIRED COMPONENTS roscpp controller_manager gazebo_ros_control std_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp controller_manager std_msgs)
 catkin_package(CATKIN_DEPENDS message_runtime)
-
-# gazebo
-find_package(gazebo REQUIRED)
-include_directories(${GAZEBO_INCLUDE_DIRS})
-link_directories(${GAZEBO_LIBRARY_DIRS})
-message(STATUS ${GAZEBO_INCLUDE_DIRS})
 
 include_directories(
 	${catkin_INCLUDE_DIRS} 
