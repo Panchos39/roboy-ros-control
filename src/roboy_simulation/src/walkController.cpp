@@ -241,7 +241,6 @@ void WalkController::Update() {
 }
 
 void WalkController::readSim(ros::Time time, ros::Duration period) {
-    ROS_DEBUG("read simulation");
     // update muscle plugins
     for (uint muscle = 0; muscle < sim_muscles.size(); muscle++) {
         for(int i = 0; i < sim_muscles[muscle]->viaPoints.size(); i++){
@@ -254,17 +253,18 @@ void WalkController::readSim(ros::Time time, ros::Duration period) {
 }
 
 void WalkController::writeSim(ros::Time time, ros::Duration period) {
-    ROS_DEBUG("write simulation");
     // apply the calculated forces
     for (uint muscle = 0; muscle < sim_muscles.size(); muscle++) {
         for(int i = 0; i < sim_muscles[muscle]->viaPoints.size(); i++){
             std::shared_ptr<roboy_simulation::IViaPoints> vp = sim_muscles[muscle]->viaPoints[i];
-            if(vp->prevForce.GetLength() > 0.0) {
+            // filter out obviously too big forces
+            if(vp->prevForce.GetLength() < 10000 && vp->nextForce.GetLength()  < 10000) {
                 vp->link->AddForceAtWorldPosition(vp->prevForce, vp->prevForcePoint);
-                ROS_INFO_STREAM_THROTTLE(1.0, vp->prevForce);
-            }
-            if(vp->nextForce.GetLength() > 0.0)
                 vp->link->AddForceAtWorldPosition(vp->nextForce, vp->nextForcePoint);
+            }else{
+                ROS_WARN_STREAM(sim_muscles[muscle]->name << " tries to apply Forces: "
+                                                          << vp->prevForce << " / " << vp->nextForce);
+            }
         }
     }
 }
@@ -1173,7 +1173,7 @@ bool WalkController::checkAbort(){
                 msg.roboyID = roboyID;
                 msg.reason = selfCollision;
                 abort_pub.publish(msg);
-                ROS_WARN_THROTTLE(1.0, "self collision detected with %s, aborting", link->GetName().c_str());
+//                ROS_WARN_THROTTLE(1.0, "self collision detected with %s, aborting", link->GetName().c_str());
                 return true;
             }
         }
