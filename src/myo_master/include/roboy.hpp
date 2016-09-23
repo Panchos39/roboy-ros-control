@@ -103,6 +103,8 @@ private:
 	double *pos;
 	double *vel;
 	double *eff;
+	double *tenDisp;
+	
 	ros::Time prevTime;
 	int8_t recording;
 	bool initialized = false;

@@ -50,8 +50,7 @@ class VelocityController : public controller_interface::Controller<hardware_inte
 		{
 			double vel = joint.getVelocity();
 			vel_msg.data = vel;
-			trajectory_pub.publish(vel_msg);
-
+			trajectory_pub.publish(vel_msg); //vel_msg is of type float32 that is a type of msg 
 			if(steered == PLAY_TRAJECTORY) {
 				dt += period.nsec*1e-6f;
 				if (dt<trajectory_duration) {
@@ -62,11 +61,11 @@ class VelocityController : public controller_interface::Controller<hardware_inte
 					steered = STOP_TRAJECTORY;
 					status_pub.publish(statusMsg);
 				}
-				joint.setCommand(setpoint);
+				joint.setCommand(setpoint); //cosi inviamo il comando
 			}
 		}
 
-		void steer(const common_utilities::Steer::ConstPtr& msg){
+		void steer(const common_utilities::Steer::ConstPtr& msg){  //uso queste per mandare i comandi alla molla, quindi con play abilito il fatto che mando il messaggio epoi con pausa mi fermo...
 			switch (msg->steeringCommand){
 				case STOP_TRAJECTORY:
 					dt = 0;

@@ -1,0 +1,10 @@
+--- /usr/include/WinTypes.h	2012-06-29 11:34:25.000000000 +0200
++++ WinTypes.h	2016-08-17 17:43:10.638629716 +0200
+@@ -4,6 +4,7 @@
+ #define WINAPI
+ 
+ #define MAX_NUM_DEVICES 50
++#include <inttypes.h>
+ #include <sys/time.h>
+ 
+ typedef unsigned int			DWORD;
